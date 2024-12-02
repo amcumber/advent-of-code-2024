@@ -1,9 +1,11 @@
 import pytest
 
+import solution1p1
+
 
 @pytest.fixture
 def ex_raw_input():
-    return "\n".join(
+    input_ = "\n".join(
         [
             "3   4",
             "4   3",
@@ -13,11 +15,13 @@ def ex_raw_input():
             "3   3",
         ]
     )
+    expected = 11
+    return input_, expected
 
 
 @pytest.fixture
 def ex_input():
-    return (
+    input_ = (
         [
             3,
             4,
@@ -35,3 +39,11 @@ def ex_input():
             3,
         ],
     )
+    expected = 11
+    return input_, expected
+
+
+def test_main(ex_raw_input):
+    input_, expected = ex_raw_input
+    result = solution1p1.main(input_)
+    assert result == expected
