@@ -1,0 +1,78 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [
+  {name = "Aaron", email = "20608451+amcumber@users.noreply.github.com"},
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "click",
+  "pytest",
+]
+description = "amcumber's solutions to advent of code 2024"
+dynamic = ["version"]
+keywords = []
+license = "MIT"
+name = "advent-of-code-2024"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.urls]
+Documentation = "https://github.com/Aaron/advent-of-code-2024#readme"
+Issues = "https://github.com/Aaron/advent-of-code-2024/issues"
+Source = "https://github.com/Aaron/advent-of-code-2024"
+
+[project.scripts]
+day01 = "aoc_2024.day01.day01:cli"
+day02 = "aoc_2024.day02.day02:cli"
+day03 = "aoc_2024.day03.day03:cli"
+
+[tool.hatch.version]
+# path = "src/aoc_2024/__about__.py"
+path = "aoc_2024/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.build.targets.wheel]
+# packages = ["src/aoc_2024"]
+packages = ["aoc_2024"]
+
+[tool.hatch.envs.types.scripts]
+# check = "mypy --install-types --non-interactive {args:src/aoc_2024 tests}"
+check = "mypy --install-types --non-interactive {args:aoc_2024 tests}"
+
+[tool.coverage.run]
+branch = true
+# omit = [
+#   "src/aoc_2024/__about__.py",
+# ]
+omit = [
+  "aoc_2024/__about__.py",
+]
+parallel = true
+source_pkgs = ["aoc_2024", "tests"]
+
+[tool.coverage.paths]
+# aoc_2024 = ["src/aoc_2024", "*/advent-of-code-2024/src/aoc_2024"]
+# tests = ["tests", "*/advent-of-code-2024/tests"]
+aoc_2024 = ["aoc_2024"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
