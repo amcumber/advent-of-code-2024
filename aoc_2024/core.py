@@ -3,9 +3,12 @@ from pathlib import Path
 ROOT = Path(__file__).parent / ".."
 
 
-def read_file(file: Path | str):
+def read_file(file: Path | str, as_str: bool = False):
     with open(file, "r") as fh:
-        payload = fh.readlines()
+        fun = fh.readlines
+        if as_str:
+            fun = fh.read
+        payload = fun()
     return payload
 
 

@@ -1,5 +1,3 @@
-import argparse
-from itertools import zip_longest
 from pathlib import Path
 
 import click
