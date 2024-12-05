@@ -42,16 +42,10 @@ def find_vert(data):
     return find_horiz(transposed)
 
 
-def transpose(data) -> list[str]:
-    new_data = []
-    first_line = data[0]
-    for iCol in range(len(first_line)):
-        col = []
-        for line in data:
-            col.append(line[iCol])
-        new_data.append(col)
-    return ["".join(line) for line in new_data]
-
+def transpose(data: list[str]) -> list[str]:
+    """Transpose data"""
+    return ["".join(col) for col in zip(*data)]
+    
 
 def diagnolize_sw_ne(data) -> list[str]:
     """
