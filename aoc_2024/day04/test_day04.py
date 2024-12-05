@@ -1,5 +1,5 @@
 import pytest
-from aoc_2024.day04 import day04
+from aoc_2024.day04 import soln
 
 
 @pytest.fixture
@@ -104,35 +104,35 @@ def ex_raw_input_p2():
 
 def test_transpose(ex_transpose):
     input_, expected = ex_transpose
-    result = day04.transpose(input_)
+    result = soln.transpose(input_)
     assert result == expected
 
 
 def test_diag_sw_ne_unsquare(ex_diag_sw_ne_unsquare):
     input_, expected = ex_diag_sw_ne_unsquare
-    result = day04.diagnolize_sw_ne(input_)
+    result = soln.diagnolize_sw_ne(input_)
     assert result == expected
 
 
 def test_diag_sw_ne(ex_diag_sw_ne):
     input_, expected = ex_diag_sw_ne
-    result = day04.diagnolize_sw_ne(input_)
+    result = soln.diagnolize_sw_ne(input_)
     assert result == expected
 
 
 def test_diag_nw_sw(ex_diag_nw_se):
     input_, expected = ex_diag_nw_se
-    result = day04.diagnolize_nw_se(input_)
+    result = soln.diagnolize_nw_se(input_)
     assert result == expected
 
 
 def test_main_part1(ex_raw_input_p1):
     input_, expected = ex_raw_input_p1
-    result = day04.main_part1(input_)
+    result = soln.main_part1(input_)
     assert result == expected
 
 
 def test_main_part2(ex_raw_input_p2):
     input_, expected = ex_raw_input_p2
-    result = day04.main_part2(input_)
+    result = soln.main_part2(input_)
     assert result == expected

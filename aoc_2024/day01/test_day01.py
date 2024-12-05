@@ -1,5 +1,5 @@
-import aoc_2024.day01.day01 as day01
 import pytest
+from aoc_2024.day01 import soln
 
 
 @pytest.fixture
@@ -28,11 +28,11 @@ def ex_raw_input_p2(input_):
 
 def test_main_part1(ex_raw_input_p1):
     input_, expected = ex_raw_input_p1
-    result = day01.main_part1(input_)
+    result = soln.main_part1(input_)
     assert result == expected
 
 
 def test_main_part2(ex_raw_input_p2):
     input_, expected = ex_raw_input_p2
-    result = day01.main_part2(input_)
+    result = soln.main_part2(input_)
     assert result == expected
