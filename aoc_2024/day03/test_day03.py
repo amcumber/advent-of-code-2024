@@ -1,5 +1,4 @@
 import pytest
-
 from aoc_2024.day03 import day03
 
 

@@ -1,6 +1,5 @@
-import pytest
-
 import aoc_2024.day01.day01 as day01
+import pytest
 
 
 @pytest.fixture

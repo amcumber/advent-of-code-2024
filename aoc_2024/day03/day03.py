@@ -1,8 +1,9 @@
-from pathlib import Path
 import re
+from pathlib import Path
 
 import click
-from ..core import read_file, get_input_file
+
+from ..core import get_input_file, read_file
 
 
 def main_part1(data):

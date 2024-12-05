@@ -45,7 +45,7 @@ def find_vert(data):
 def transpose(data: list[str]) -> list[str]:
     """Transpose data"""
     return ["".join(col) for col in zip(*data)]
-    
+
 
 def diagnolize_sw_ne(data) -> list[str]:
     """
