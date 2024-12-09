@@ -205,13 +205,17 @@ def infill_agents(first: Agent, second: Agent):
             yield Agent(Point(ele, first.y), second.face)
 
 
-def calculate_steps(agent_pos: list[Agent]) -> int:
+def infill_agent_list(agent_pos: list[Agent]):
     first_agent = agent_pos.pop(0)
-    infilled = []
     for next_agent in agent_pos:
-        infilled.extend(list(infill_agents(first_agent, next_agent)))
+        for agent in infill_agents(first_agent, next_agent):
+            yield agent
         first_agent = next_agent
-    return len(set((agent.x, agent.y) for agent in infilled))
+
+
+def calculate_steps(agent_pos: list[Agent]) -> int:
+    no_repeat = set((agent.x, agent.y) for agent in infill_agent_list(agent_pos))
+    return len(no_repeat)
 
 
 def get_dims(data):
@@ -233,16 +237,24 @@ def _add_nearby(agent: Agent, maxes: tuple[int, int]) -> list[Wall]:
     right = agent.pos.x + 1, agent.pos.y
     up = agent.pos.x, agent.pos.y - 1
     down = agent.pos.x, agent.pos.y + 1
-    return [Wall(x, y) for x, y in (left, right, up, down) if x <= max_x and y <= max_y]
+    nearby = []
+    for x, y in (left, right, up, down):
+        if x > max_x or y > max_y or x < 0 or y < 0:
+            continue
+        nearby.append(Wall(x, y))
+    return nearby
 
 
 def _get_naive_walls(agent_pos: list[Agent], maxes: tuple[int, int]) -> list[Wall]:
     naive_walls = []
-    for agent in agent_pos:
+    for agent in infill_agent_list(agent_pos):
         naive_walls.extend(_add_nearby(agent, maxes))
-    wall_tups = set((wall.x, wall.y) for wall in naive_walls)
-
-    return [Wall(x, y) for x, y in wall_tups]
+    no_doubles = []
+    for wall in naive_walls:
+        if wall in no_doubles:
+            continue
+        no_doubles.append(wall)
+    return no_doubles
 
 
 def get_wall_candidates(

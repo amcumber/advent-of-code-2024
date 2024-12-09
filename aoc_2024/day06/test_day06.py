@@ -144,10 +144,10 @@ def expected_cands():
         for x, y in [
             (6, 3),
             (7, 6),
-            (7, 7),
             (8, 1),
-            (8, 3),
             (9, 7),
+            (7, 7),
+            (8, 3),
         ]
     )
 
@@ -170,3 +170,22 @@ def test_get_wall_candidates(input_, expected_cands):
     results = soln.get_wall_candidates(agent_pos, walls, maxes)
     for e in expected_cands:
         assert e in results
+
+
+@pytest.mark.parametrize(
+    ["agent", "expected"],
+    [
+        ((5, 5), [(4, 5), (6, 5), (5, 6), (5, 4)]),
+        ((0, 5), [(1, 5), (0, 6), (0, 4)]),
+        ((0, 0), [(1, 0), (0, 1)]),
+        ((10, 10), [(9, 10), (10, 9)]),
+    ],
+)
+def test_get_nearby(agent, expected):
+    max_ = 10
+    expected = [soln.Wall(*ex) for ex in expected]
+    agent = soln.Agent(soln.Point(*agent), soln.Face.up)
+    result = soln._add_nearby(agent, (max_, max_))
+    assert len(result) == len(expected)
+    for ex in expected:
+        assert ex in result
