@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
@@ -178,11 +179,21 @@ def step(agent_pos: list[Agent], walls: list[Wall], maxes=tuple[int, int]) -> bo
     return False
 
 
-def walk_agent(agent: Agent, walls: list[Wall], maxes=tuple[int, int]) -> list[Agent]:
+def walk_agent(
+    agent: Agent,
+    walls: list[Wall],
+    maxes=tuple[int, int],
+) -> list[Agent]:
     agent_pos = [agent]
     stop = False
+    steps = 0
+    MAX_STEPS = 20_000
     while not stop:
         stop = step(agent_pos, walls, maxes=maxes)
+        # steps += 1
+        if steps > MAX_STEPS:
+            # hard to find infinite loop?
+            break
     return agent_pos
 
 
@@ -265,7 +276,7 @@ def get_wall_candidates(
 
 
 def does_wall_make_loop(cand, walls, agent, maxes):
-    tmp_walls = walls.copy()
+    tmp_walls = deepcopy(walls)
     tmp_walls.append(cand)
     agent_pos = walk_agent(agent, tmp_walls, maxes=maxes)
     return agent_pos[-1].face != Face.standing
@@ -287,11 +298,7 @@ def find_loops(
             maxes,
         )
     ]
-    # for cand in candidates:
-    #     if await does_wall_make_loop(cand, walls, maxes):
-    #         successful.append(cand)
-    final_set = set((wall.x, wall.y) for wall in successful)
-    return final_set
+    return successful
 
 
 def main_part2(data):
