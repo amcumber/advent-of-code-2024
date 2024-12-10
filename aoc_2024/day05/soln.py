@@ -1,6 +1,4 @@
-import re
 from collections import defaultdict
-from dataclasses import dataclass
 from pathlib import Path
 
 import click
@@ -80,9 +78,7 @@ def main_part2(data):
     rule_set = create_rule_set(data)
     _, no_right = rule_set
     instructions = create_instructions(data)
-    invalid = [
-        inst for inst in instructions if not is_validate(inst, *rule_set)
-    ]
+    invalid = [inst for inst in instructions if not is_validate(inst, *rule_set)]
     valid = [validate(inst, no_right) for inst in invalid]
     mids = [get_middle(inst) for inst in valid]
     return sum(mids)

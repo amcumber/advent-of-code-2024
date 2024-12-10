@@ -1,6 +1,3 @@
-from copy import deepcopy
-from dataclasses import dataclass
-from enum import Enum, auto
 from itertools import product
 from pathlib import Path
 
@@ -52,20 +49,20 @@ def compute_p2(line: str) -> int:
 
 
 def main_part1(data):
-    """Solution to day 06 part 1"""
+    """Solution to day 07 part 1"""
     vals = [compute(line) for line in data]
     return sum(vals)
 
 
 def main_part2(data):
-    """Solution to day 06 part 2"""
+    """Solution to day 07 part 2"""
     vals = [compute_p2(line) for line in data]
     return sum(vals)
 
 
 @click.group
 def cli():
-    """Command Line Interface for day05"""
+    """Command Line Interface for day07"""
 
 
 @cli.command()

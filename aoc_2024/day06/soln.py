@@ -234,7 +234,7 @@ def get_dims(data):
 
 
 def main_part1(data):
-    """Solution to day 05 part 1"""
+    """Solution to day 06 part 1"""
     agent = get_agent(data)
     walls = get_walls(data)
     maxes = get_dims(data)
@@ -302,7 +302,7 @@ def find_loops(
 
 
 def main_part2(data):
-    """Solution to day 05 part 2"""
+    """Solution to day 06 part 2"""
     agent = get_agent(data)
     walls = get_walls(data)
     maxes = get_dims(data)
@@ -314,7 +314,7 @@ def main_part2(data):
 
 @click.group
 def cli():
-    """Command Line Interface for day05"""
+    """Command Line Interface for day06"""
 
 
 @cli.command()

@@ -1,6 +1,4 @@
 import re
-from collections import defaultdict
-from dataclasses import dataclass
 from pathlib import Path
 
 import click
@@ -11,7 +9,6 @@ FORWARD = "XMAS"
 
 
 def find_hits_p1(data):
-
     hits = []
     for fun in (find_horiz, find_vert, find_sw_ne, find_nw_se):
         hits.extend([len(line) for line in fun(data)])
@@ -157,7 +154,6 @@ def find_x_mas(data, pattern):
 
 
 def find_mmass(data):
-
     pattern = {
         "tl": "M",
         "tr": "M",
@@ -169,7 +165,6 @@ def find_mmass(data):
 
 
 def find_msams(data):
-
     pattern = {
         "tl": "M",
         "tr": "S",
@@ -181,7 +176,6 @@ def find_msams(data):
 
 
 def find_ssamm(data):
-
     pattern = {
         "tl": "S",
         "tr": "S",
@@ -193,7 +187,6 @@ def find_ssamm(data):
 
 
 def find_smasm(data):
-
     pattern = {
         "tl": "S",
         "tr": "M",
