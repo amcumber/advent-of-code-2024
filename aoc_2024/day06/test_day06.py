@@ -152,6 +152,21 @@ def expected_cands():
     )
 
 
+@pytest.mark.parametrize(
+    ["wall", "expected"],
+    [
+        (soln.Wall(6, 3), True),
+        (soln.Wall(6, 4), False),
+        (soln.Wall(8, 4), False),
+        (soln.Wall(8, 3), True),
+    ],
+)
+def test_wall_in(wall, expected_cands, expected):
+    walls = expected_cands
+    result = wall in walls
+    assert result == expected
+
+
 def test_get_naive_walls(input_, expected_cands):
     agent = soln.get_agent(input_)
     walls = soln.get_walls(input_)
