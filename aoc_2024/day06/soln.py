@@ -264,17 +264,34 @@ def get_wall_candidates(
     return [cand for cand in naive_cand if cand not in walls]
 
 
+def does_wall_make_loop(cand, walls, agent, maxes):
+    tmp_walls = walls.copy()
+    tmp_walls.append(cand)
+    agent_pos = walk_agent(agent, tmp_walls, maxes=maxes)
+    return agent_pos[-1].face != Face.standing
+
+
 def find_loops(
-    agent: Agent, walls: list[Wall], candidates: list[Wall], maxes: tuple[int, int]
+    agent: Agent,
+    walls: list[Wall],
+    candidates: list[Wall],
+    maxes: tuple[int, int],
 ) -> list[Wall]:
-    successful = []
-    for cand in candidates:
-        tmp_walls = walls.copy()
-        tmp_walls.append(cand)
-        agent_pos = walk_agent(agent, tmp_walls, maxes=maxes)
-        if agent_pos[-1].face != Face.standing:
-            successful.append(cand)
-    return successful
+    successful = [
+        cand
+        for cand in candidates
+        if does_wall_make_loop(
+            cand,
+            walls,
+            agent,
+            maxes,
+        )
+    ]
+    # for cand in candidates:
+    #     if await does_wall_make_loop(cand, walls, maxes):
+    #         successful.append(cand)
+    final_set = set((wall.x, wall.y) for wall in successful)
+    return final_set
 
 
 def main_part2(data):
