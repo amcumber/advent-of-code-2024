@@ -2,181 +2,67 @@ from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
+from typing import Iterable
 
 import click
 
-from ..core import get_input_file, read_file
+from ..core import (
+    get_input_file,
+    grid_input,
+    inbounds,
+    parse_coords,
+    read_file,
+    GridElement,
+)
+
+Point = complex
 
 
 class Face(Enum):
-    up = auto()
-    right = auto()
-    down = auto()
-    left = auto()
-    standing = auto()
+    up = complex(1, 0)
+    right = complex(0, 1)
+    down = complex(-1, 0)
+    left = complex(0, -1)
+    standing = complex(0, 0)
 
+
+TURN = 1j
 
 WALL = "#"
-AGENT_FACES = ["^", ">", "v", "<"]
-AGENT2ENUM = {
+AGENT_FACES = "^>v<"
+SYM2ENUM = {
     "^": Face.up,
     ">": Face.right,
     "v": Face.down,
     "<": Face.left,
 }
-TURN = {
-    Face.up: Face.right,
-    Face.right: Face.down,
-    Face.down: Face.left,
-    Face.left: Face.up,
-    Face.standing: Face.standing,
-}
-
-
-def _get_targets(data: list[str], target: str) -> list[tuple[int, int]]:
-    targets = []
-    for x, row in enumerate(data):
-        if target in row:
-            for y, ele in enumerate(row):
-                if ele == target:
-                    targets.append((x, y))
-    return targets
 
 
 def get_walls(data):
-    return [Wall(*ele) for ele in _get_targets(data, WALL)]
+    return parse_coords(data, WALL)
 
 
 def get_agent(data):
-    for agent_face in AGENT_FACES:
-        face = AGENT2ENUM[agent_face]
-        if agent_pos := _get_targets(data, agent_face):
-            return Agent(Point(*agent_pos.pop()), face)
+    for ele in grid_input(data):
+        if ele.sym in AGENT_FACES:
+            return ele
+    raise AttributeError("Can't find agent!")
 
 
-@dataclass
-class Point:
-    x: int
-    y: int
-
-    def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            raise TypeError("Must be same type")
-        return (self.x, self.y) == (other.x, other.y)
-
-
-@dataclass
-class Wall(Point):
-    """wall"""
-
-
-@dataclass
-class Agent:
-    """agent position and facing direction"""
-
-    pos: Point
-    face: Face
-
-    @property
-    def x(self):
-        return self.pos.x
-
-    @property
-    def y(self):
-        return self.pos.y
-
-    def __eq__(self, other):
-        if not isinstance(other, self.__class__):
-            raise TypeError("Must be same type")
-        if self.pos != other.pos:
-            return False
-        return self.face == other.face
-
-
-def get_walls_row(agent: Agent, walls: list[Wall]):
-    return [wall for wall in walls if wall.x == agent.x]
-
-
-def get_walls_col(agent: Agent, walls: list[Wall]):
-    return [wall for wall in walls if wall.y == agent.y]
-
-
-def walk_up(agent, walls) -> Agent:
-    collided_wall = None
-    for wall in get_walls_col(agent, walls):
-        is_wall_fits = wall.x < agent.x
-        is_wall_close = True
-        if collided_wall is not None:
-            is_wall_close = wall.x > collided_wall.x
-        if is_wall_fits and is_wall_close:
-            collided_wall = wall
-    if collided_wall is None:
-        return Agent(Point(0, agent.y), Face.standing)
-    return Agent(Point(collided_wall.x + 1, agent.y), TURN[agent.face])
-
-
-def walk_right(agent, walls, max_y=999):
-    collided_wall = None
-    for wall in get_walls_row(agent, walls):
-        is_wall_fits = wall.y > agent.y
-        is_wall_close = True
-        if collided_wall is not None:
-            is_wall_close = wall.y < collided_wall.y
-        if is_wall_fits and is_wall_close:
-            collided_wall = wall
-    if collided_wall is None:
-        return Agent(Point(agent.x, max_y), Face.standing)
-    return Agent(Point(agent.x, collided_wall.y - 1), TURN[agent.face])
-
-
-def walk_down(agent, walls, max_x=999):
-    collided_wall = None
-    for wall in get_walls_col(agent, walls):
-        is_wall_fits = wall.x > agent.x
-        is_wall_close = True
-        if collided_wall is not None:
-            is_wall_close = wall.x < collided_wall.x
-        if is_wall_fits and is_wall_close:
-            collided_wall = wall
-    if collided_wall is None:
-        return Agent(Point(max_x, agent.y), Face.standing)
-    return Agent(Point(collided_wall.x - 1, agent.y), TURN[agent.face])
-
-
-def walk_left(agent, walls):
-    collided_wall = None
-    for wall in get_walls_row(agent, walls):
-        is_wall_fits = wall.y < agent.y
-        is_wall_close = True
-        if collided_wall is not None:
-            is_wall_close = wall.y > collided_wall.y
-        if is_wall_fits and is_wall_close:
-            collided_wall = wall
-    if collided_wall is None:
-        return Agent(Point(agent.x, 0), Face.standing)
-    return Agent(Point(agent.x, collided_wall.y + 1), TURN[agent.face])
-
-
-def step(agent_pos: list[Agent], walls: list[Wall], maxes=tuple[int, int]) -> bool:
-    agent = agent_pos[-1]
-    max_x, max_y = maxes
-    match agent.face:
-        case Face.up:
-            new_agent = walk_up(agent, walls)
-        case Face.right:
-            new_agent = walk_right(agent, walls, max_y=max_y)
-        case Face.down:
-            new_agent = walk_down(agent, walls, max_x=max_x)
-        case Face.left:
-            new_agent = walk_left(agent, walls)
-        case Face.standing:
-            return True
-    if new_agent in agent_pos:
-        return True
-    if new_agent.pos == agent_pos[-1].pos:
-        agent_pos[-1] = new_agent
-    agent_pos.append(new_agent)
-    return False
+def step(
+    agent: GridElement,
+    agent_history: set[GridElement],
+    walls: Iterable[GridElement],
+    dims=tuple[int, int],
+) -> bool:
+    face = SYM2ENUM[agent.sym]
+    new_agent = GridElement(agent.pos + face.value, Face(face.value * TURN).name)
+    if inbounds(new_agent, dims):
+        if new_agent in agent_history:
+            new_agent.sym = Face.standing.name
+        agent_history.add(new_agent.pos)
+    # TODO: Here
+    return new_agent
 
 
 def walk_agent(
@@ -189,7 +75,7 @@ def walk_agent(
     steps = 0
     MAX_STEPS = 20_000
     while not stop:
-        stop = step(agent_pos, walls, maxes=maxes)
+        stop = step(agent_pos, walls, dims=maxes)
         # steps += 1
         if steps > MAX_STEPS:
             # hard to find infinite loop?
