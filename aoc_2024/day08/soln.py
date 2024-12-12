@@ -5,19 +5,20 @@ from pathlib import Path
 import click
 
 from ..core import (
+    GridElement,
     get_coord_dims,
     get_input_file,
+    inbounds,
     parse_coords_except,
     read_file,
-    GridElement,
 )
 
 SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MT = "."
 
 
-def inbounds(coord, maxes):
-    return 0 <= coord.real < maxes[0] and 0 <= coord.imag < maxes[1]
+# def inbounds_coord(coord, maxes):
+#     return 0 <= coord.real < maxes[0] and 0 <= coord.imag < maxes[1]
 
 
 def make_lib(ant_list: list[GridElement]):
@@ -29,7 +30,24 @@ def make_lib(ant_list: list[GridElement]):
     return ant_lib
 
 
-def get_antinodes(data):
+# def get_antinodes(data):
+#     ant_list = list(parse_coords_except(data, MT))
+#     ant_lib = make_lib(ant_list)
+#     dims = get_coord_dims(data)
+
+#     antinodes = set()
+#     for sym, ants in ant_lib.items():
+#         for first, second in product(ants, repeat=2):
+#             if first == second:
+#                 continue
+#             diff = second.pos - first.pos
+#             third = first.pos - diff
+#             if inbounds(GridElement(third, "#"), dims):
+#                 antinodes.add(third)
+#     return antinodes
+
+
+def get_antinodes(data, max_iter=1):
     ant_list = list(parse_coords_except(data, MT))
     ant_lib = make_lib(ant_list)
     dims = get_coord_dims(data)
@@ -37,9 +55,15 @@ def get_antinodes(data):
     antinodes = set()
     for sym, ants in ant_lib.items():
         for first, second in product(ants, repeat=2):
+            if first == second:
+                continue
             diff = second.pos - first.pos
-            third = first.pos - diff
-            if inbounds(third, dims):
+            for n in range(1, max_iter + 1):
+                # TODO: broken here - missing points
+                third = second.pos + n * diff
+                if inbounds(GridElement(third, "#"), dims):
+                    break
+                    # continue
                 antinodes.add(third)
     return antinodes
 
@@ -52,6 +76,8 @@ def main_part1(data):
 
 def main_part2(data):
     """Solution to day 08 part 2"""
+    antinodes = get_antinodes(data, max_iter=50)
+    return len(antinodes)
 
 
 @click.group
