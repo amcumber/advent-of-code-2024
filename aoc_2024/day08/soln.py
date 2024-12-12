@@ -47,9 +47,11 @@ def make_lib(ant_list: list[GridElement]):
 #     return antinodes
 
 
-def get_antinodes(data, max_iter=1):
+def get_antinodes(data, rng=range(1, 2)):
     ant_list = list(parse_coords_except(data, MT))
     ant_lib = make_lib(ant_list)
+    for node in ant_lib:
+        assert node in SYMBOLS, f"unknown node {node} found"
     dims = get_coord_dims(data)
 
     antinodes = set()
@@ -58,10 +60,10 @@ def get_antinodes(data, max_iter=1):
             if first == second:
                 continue
             diff = second.pos - first.pos
-            for n in range(1, max_iter + 1):
+            for n in rng:
                 # TODO: broken here - missing points
-                third = second.pos + n * diff
-                if inbounds(GridElement(third, "#"), dims):
+                third = first.pos - n * diff
+                if not inbounds(GridElement(third, "#"), dims):
                     break
                     # continue
                 antinodes.add(third)
@@ -76,7 +78,8 @@ def main_part1(data):
 
 def main_part2(data):
     """Solution to day 08 part 2"""
-    antinodes = get_antinodes(data, max_iter=50)
+    dims = get_coord_dims(data)
+    antinodes = get_antinodes(data, rng=range(0, max(dims) + 1))
     return len(antinodes)
 
 

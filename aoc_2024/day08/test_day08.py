@@ -1,5 +1,6 @@
 import pytest
 
+from aoc_2024 import core
 from aoc_2024.day08 import soln
 
 
@@ -96,25 +97,38 @@ def test_main_part2(ex_raw_input_p2):
 
 
 def test_get_antinodes_p2(tee_input):
-    # T....#....
-    # ...T......
-    # .T....#...
-    # .........#
-    # ..#.......
-    # ..........
-    # ...#......
-    # ..........
-    # ....#.....
-    # ..........
-    expected = set(
-        [
-            0 + 5j,
-            2 + 6j,
-            3 + 9j,
-            4 + 2j,
-            6 + 3j,
-            8 + 4j,
-        ]
-    )
-    result = soln.get_antinodes(tee_input, max_iter=50)
+    grid = [
+        "#....#....",
+        "...#......",
+        ".#....#...",
+        ".........#",
+        "..#.......",
+        "..........",
+        "...#......",
+        "..........",
+        "....#.....",
+        "..........",
+    ]
+    expected = set(coord.pos for coord in core.parse_coords(grid, "#"))
+    result = soln.get_antinodes(tee_input, rng=range(0, 15))
+    assert result == expected
+
+
+def test_get_antinodes_large_p2(input_):
+    grid = [
+        "##....#....#",
+        ".#.#....#...",
+        "..#.##....#.",
+        "..##...#....",
+        "....#....#..",
+        ".#...##....#",
+        "...#..#.....",
+        "#....#.#....",
+        "..#.....#...",
+        "....#....#..",
+        ".#........#.",
+        "...#......##",
+    ]
+    expected = set(coord.pos for coord in core.parse_coords(grid, "#"))
+    result = soln.get_antinodes(input_, rng=range(0, 15))
     assert result == expected
