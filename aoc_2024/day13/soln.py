@@ -5,8 +5,17 @@ import click
 from ..core import get_input_file, read_file
 
 
+def parse_equations(data): ...
+
+
+def solve_equations(eqns): ...
+
+
 def main_part1(data):
     """Solution to day 13 part 1"""
+    eqns = parse_equations(data)
+    solns = solve_equations(eqns)
+    return sum(solns)
 
 
 def main_part2(data):
