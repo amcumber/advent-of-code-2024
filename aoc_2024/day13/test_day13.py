@@ -1,8 +1,8 @@
+import numpy as np
 import pytest
 
 from aoc_2024 import core
 from aoc_2024.day13 import soln
-import numpy as np
 
 
 @pytest.fixture
@@ -33,11 +33,16 @@ def ex_eqn1():
         "Button B: X+22, Y+67\n",
         "Prize: X=8400, Y=5400\n",
     ]
-    eqn = np.array(
-        [
-            [94 + 34j, 0, 8400 + 5400j],
-            [0, 22 + 67j, 8400 + 5400j],
-        ]
+    # 0 = 94x + 34y - A
+    # 0 = 22x + 67Y - B
+    eqn = (
+        np.array(
+            [
+                [94, 34, -1, 0],
+                [22, 67, 0, -1],
+            ]
+        ),
+        np.array([8400, 5400]),
     )
     soln = 200
     return input_, eqn, soln
