@@ -11,9 +11,9 @@ from ..core import (
     GridElement,
     get_coord_dims,
     get_input_file,
-    grid_input,
     inbounds,
     parse_coords,
+    parse_coords_all,
     read_file,
 )
 
@@ -47,7 +47,7 @@ def get_walls(data):
 
 
 def get_agent(data):
-    for ele in grid_input(data):
+    for ele in parse_coords_all(data):
         if ele.sym in AGENT_FACES:
             return Agent(ele.pos, SYM2ENUM[ele.sym])
     raise AttributeError("Can't find agent!")

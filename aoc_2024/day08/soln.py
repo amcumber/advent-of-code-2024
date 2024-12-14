@@ -17,10 +17,6 @@ SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MT = "."
 
 
-# def inbounds_coord(coord, maxes):
-#     return 0 <= coord.real < maxes[0] and 0 <= coord.imag < maxes[1]
-
-
 def make_lib(ant_list: list[GridElement]):
     ant_lib = defaultdict(list)
     for ele in ant_list:
@@ -28,23 +24,6 @@ def make_lib(ant_list: list[GridElement]):
             continue
         ant_lib[ele.sym].append(ele)
     return ant_lib
-
-
-# def get_antinodes(data):
-#     ant_list = list(parse_coords_except(data, MT))
-#     ant_lib = make_lib(ant_list)
-#     dims = get_coord_dims(data)
-
-#     antinodes = set()
-#     for sym, ants in ant_lib.items():
-#         for first, second in product(ants, repeat=2):
-#             if first == second:
-#                 continue
-#             diff = second.pos - first.pos
-#             third = first.pos - diff
-#             if inbounds(GridElement(third, "#"), dims):
-#                 antinodes.add(third)
-#     return antinodes
 
 
 def get_antinodes(data, rng=range(1, 2)):
@@ -61,11 +40,9 @@ def get_antinodes(data, rng=range(1, 2)):
                 continue
             diff = second.pos - first.pos
             for n in rng:
-                # TODO: broken here - missing points
                 third = first.pos - n * diff
                 if not inbounds(GridElement(third, "#"), dims):
                     break
-                    # continue
                 antinodes.add(third)
     return antinodes
 

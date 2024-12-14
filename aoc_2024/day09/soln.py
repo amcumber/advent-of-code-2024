@@ -1,6 +1,5 @@
-from collections import defaultdict, namedtuple
 from dataclasses import dataclass
-from itertools import product, zip_longest
+from itertools import zip_longest
 from pathlib import Path
 
 import click
@@ -59,9 +58,6 @@ def main_part1(data):
 class FileBlock:
     file_id: int
     n: int
-
-
-# FileBlock = namedtuple("FileBlock", ["file_id", "n", "idx"])
 
 
 def convert_expanded(expanded) -> list[FileBlock]:

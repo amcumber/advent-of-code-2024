@@ -17,7 +17,7 @@ classifiers = [
 ]
 dependencies = [
   "click",
-  "pytest",
+  "numpy",
 ]
 description = "amcumber's solutions to advent of code 2024"
 dynamic = ["version"]
@@ -59,8 +59,13 @@ day23 = "aoc_2024.day23.soln:cli"
 day24 = "aoc_2024.day24.soln:cli"
 day25 = "aoc_2024.day25.soln:cli"
 
+[project.optional-dependencies]
+development = [
+  "IPython",
+  "pytest",
+]
+
 [tool.hatch.version]
-# path = "src/aoc_2024/__about__.py"
 path = "aoc_2024/__about__.py"
 
 [tool.hatch.envs.types]
@@ -68,18 +73,13 @@ extra-dependencies = [
   "mypy>=1.0.0",
 ]
 [tool.hatch.build.targets.wheel]
-# packages = ["src/aoc_2024"]
 packages = ["aoc_2024"]
 
 [tool.hatch.envs.types.scripts]
-# check = "mypy --install-types --non-interactive {args:src/aoc_2024 tests}"
 check = "mypy --install-types --non-interactive {args:aoc_2024 tests}"
 
 [tool.coverage.run]
 branch = true
-# omit = [
-#   "src/aoc_2024/__about__.py",
-# ]
 omit = [
   "aoc_2024/__about__.py",
 ]
@@ -87,8 +87,6 @@ parallel = true
 source_pkgs = ["aoc_2024", "tests"]
 
 [tool.coverage.paths]
-# aoc_2024 = ["src/aoc_2024", "*/advent-of-code-2024/src/aoc_2024"]
-# tests = ["tests", "*/advent-of-code-2024/tests"]
 aoc_2024 = ["aoc_2024"]
 tests = ["tests"]
 

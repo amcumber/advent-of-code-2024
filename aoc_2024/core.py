@@ -29,7 +29,7 @@ def get_input_file(soln_file: str) -> Path:
     return ROOT / "usr" / day / "input.txt"
 
 
-def grid_input(data: Iterable[str]):
+def parse_coords_all(data: Iterable[str]):
     """Generate a complete grid of the given input"""
     for row, line in enumerate(data):
         for col, ele in enumerate(line.strip()):
@@ -40,14 +40,14 @@ def parse_coords(data: list[str], symbol: str):
     """parse coordinates of a given symbol - used for grid problems
     e.g. result yields (ROW, COL, symbol)
     """
-    return (pnt for pnt in grid_input(data) if pnt.sym == symbol)
+    return (pnt for pnt in parse_coords_all(data) if pnt.sym == symbol)
 
 
 def parse_coords_except(data: list[str], symbol: str):
     """parse coordinates of a given symbol - used for grid problems
     e.g. result yields (ROW, COL, symbol)
     """
-    return (pnt for pnt in grid_input(data) if pnt.sym != symbol)
+    return (pnt for pnt in parse_coords_all(data) if pnt.sym != symbol)
 
 
 def get_coord_dims(data: list[str]) -> tuple[int, int]:
