@@ -224,18 +224,12 @@ def test_main_part2_convert(ex_files, ex_raw_input_p2):
     assert files == r_files
 
 
-def test_main_part2_defrag(ex_files, ex_raw_input_p2):
-    _, checksum = ex_raw_input_p2
-    expanded, files, defragged, def_files = ex_files
-    r_files = soln.convert_expanded(expanded)
-
-    r_def_files = soln.defrag_p2(r_files)
-    assert r_def_files == def_files
-
-
 def test_main_part2_convert_defrag(ex_files, ex_raw_input_p2):
     _, checksum = ex_raw_input_p2
     expanded, files, defragged, def_files = ex_files
+    first_soln = soln.convert_files(def_files)
+    assert first_soln == defragged
+
     r_files = soln.convert_expanded(expanded)
 
     r_def_files = soln.defrag_p2(r_files)

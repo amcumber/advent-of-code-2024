@@ -68,13 +68,11 @@ def convert_expanded(expanded) -> list[FileBlock]:
     files = []
     prev_id = expanded[0]
     n = 0
-    start_idx = 0
     for idx, file_id in enumerate(expanded):
         if file_id == prev_id:
             n += 1
             continue
         files.append(FileBlock(prev_id, n))
-        start_idx = idx
         prev_id = file_id
         n = 1
     files.append(FileBlock(file_id, n))
@@ -82,12 +80,24 @@ def convert_expanded(expanded) -> list[FileBlock]:
 
 
 def defrag_p2(files: list[FileBlock]) -> list[int]:
-    def _search(file):
+    def _compress_mt(defragged, loc, n):
+        prev_ = defragged[loc - 1]
+        next_ = defragged[loc + 1]
+        new_mt = defragged[loc]
+        if next_.file_id == new_mt.file_id:
+            new_mt.n += next_.n
+            defragged.pop(loc + 1)
+        if prev_.file_id == new_mt.file_id:
+            new_mt.n += prev_.n
+            defragged.pop(loc - 1)
+
+    def _search(file, defragged):
+        i_file = defragged.index(file)
         mts = [
-            (idx, file) for idx, file in enumerate(defragged) if file.file_id == BLANK
+            (idx, file)
+            for idx, file in enumerate(defragged)
+            if file.file_id == BLANK and idx < i_file
         ]
-        max_n = len(defragged)
-        i_file = max_n - i_rev - 1
         for i_mt, mt in mts:
             if i_mt >= i_file:
                 return
@@ -96,6 +106,7 @@ def defrag_p2(files: list[FileBlock]) -> list[int]:
             if mt.n == file.n:
                 defragged[i_file] = mt
                 defragged[i_mt] = file
+                _compress_mt(defragged, i_file, file.n)
                 return
             remaining = FileBlock(BLANK, mt.n - file.n)
             displaced = FileBlock(BLANK, file.n)
@@ -104,13 +115,14 @@ def defrag_p2(files: list[FileBlock]) -> list[int]:
             defragged[i_mt] = remaining
             # insert file
             defragged.insert(i_mt, file)
+            _compress_mt(defragged, i_file, file.n)
             return
 
     defragged = list(files)
-    for i_rev, file in enumerate(reversed(files)):
+    for file in reversed(files):
         if file.file_id == BLANK:
             continue
-        _search(file)
+        _search(file, defragged)
     return defragged
 
 
