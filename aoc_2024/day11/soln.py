@@ -53,7 +53,7 @@ def gen0(gen, stagger=0):
     rem = (gen + stagger) % CYCLE
     n = (gen + stagger) // CYCLE
     addl = 1
-    if n > 1:
+    if n >= 1:
         m = gen - CYCLE + 1
         addl = gen0(m) + 2 * gen2(m) + gen4(m)
     last = 0
@@ -83,8 +83,9 @@ def gen2(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        addl = gen0(m := gen - CYCLE) + 2 * gen4(m) + gen8(m)
+    if n >= 1:
+        m = gen - CYCLE + 1
+        addl = gen0(m) + 2 * gen4(m) + gen8(m)
     last = 0
     if rem == CYCLE - 2:
         last = 1
@@ -100,8 +101,8 @@ def gen3(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = gen0(m) + gen2(m) + gen6(m) + gen7(m)
     last = 0
     if rem == CYCLE - 2:
@@ -118,8 +119,9 @@ def gen4(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        addl = gen0(m := gen - CYCLE) + gen8(m) + gen9(m) + gen6(m)
+    if n >= 1:
+        m = gen - CYCLE + 1
+        addl = gen0(m) + gen8(m) + gen9(m) + gen6(m)
     last = 0
     if rem == CYCLE - 2:
         last = 1
@@ -136,8 +138,8 @@ def gen5(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = 2 * gen0(m) + 2 * gen2(m) + gen4(m) + 3 * gen8(m)
     last = 0
     if rem == CYCLE - 2:
@@ -157,8 +159,8 @@ def gen6(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = gen2(m) + 2 * gen4(m) + 2 * gen5(m) + gen6(m) + gen7(m) + gen9(m)
     last = 0
     if rem == CYCLE - 2:
@@ -178,8 +180,8 @@ def gen7(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = gen0(m) + 2 * gen2(m) + gen3(m) + 2 * gen6(m) + gen7(m) + gen8(m)
     last = 0
     if rem == CYCLE - 2:
@@ -199,8 +201,8 @@ def gen8(gen, stagger=0):
     rem = (gen + stagger) % CYCLE
     n = (gen + stagger) // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = gen3(m) + 2 * gen2(m) + gen6(m) + 2 * gen7(m) + gen8(m, stagger=1)
     last = 0
     if rem == CYCLE - 2:
@@ -220,8 +222,8 @@ def gen9(gen):
     rem = gen % CYCLE
     n = gen // CYCLE
     addl = 1
-    if n > 1:
-        m = gen - CYCLE
+    if n >= 1:
+        m = gen - CYCLE + 1
         addl = gen1(m) + gen3(m) + gen4(m) + 2 * gen6(m) + 2 * gen8(m) + gen9(m)
     last = 0
     if rem == CYCLE - 2:
