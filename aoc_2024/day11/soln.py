@@ -1,3 +1,4 @@
+from collections import Counter
 from functools import cache
 from pathlib import Path
 
@@ -41,21 +42,29 @@ def main_part1(data, generations=25):
     return len(stones)
 
 
+def blink_stones_p2(stone: int):
+    if stone == 0:
+        yield 1
+    elif (n := len(str(stone))) % 2 == 0:
+        new_stones = str(stone)[: n // 2], str(stone)[n // 2 :]
+        for new_stone in new_stones:
+            yield int(new_stone)
+    else:
+        yield stone * 2024
+
+
 def main_part2(data, generations=75):
     """Solution to day 11 part 2"""
-    stones = to_list(data)
-    n_stones = 0
-    gen = generations
-    while True:
-        out_stones = pop_stones(stones)
-        n_stones += count_stones(out_stones, gen)
-        if len(stones) == 0:
-            break
-        gen -= 1
-        stones = blink(stones)
-        if gen <= 0:
-            break
-    return n_stones + len(stones)
+    stones = Counter([int(ele) for ele in data.strip().split()])
+    for _ in range(generations):
+        new_stones = Counter()
+        for stone in stones:
+            next_stones = Counter(list(blink_stones_p2(stone)))
+            for next_ in next_stones:
+                next_stones[next_] *= stones[stone]
+            new_stones.update(next_stones)
+        stones = new_stones
+    return stones.total()
 
 
 @click.group
@@ -72,6 +81,7 @@ def part1(file):
 
 @cli.command()
 @click.option("--file", default=get_input_file(__file__))
-def part2(file):
+@click.option("-g", "--generations", default=75)
+def part2(file, generations):
     data = read_file(Path(file), as_str=True)
-    print(main_part2(data))
+    print(main_part2(data, generations))

@@ -24,23 +24,8 @@ def test_main_part1(ex_input_p1):
     assert result == len(expected)
 
 
-@pytest.mark.parametrize(
-    ["gen"], ((1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,), (10,))
-)
-def test_gen0(gen):
-    e = [0]
-    for _ in range(gen):
-        e = soln.blink(e)
-    expected = e
-    result = soln.gen0(gen)
-    assert result == len(expected)
-
-
-@pytest.mark.parametrize(
-    ["gen", "expected"], [(1, 3), (2, 4), (3, 5), (4, 9), (5, 13), (6, 22)]
-)
-def test_main_part2(ex_input_p1, gen, expected):
-    input_, *_ = ex_input_p1
-    expected = soln.to_list(expected)
-    result = soln.main_part2(input_, generations=gen)
-    assert result == len(expected)
+def test_main_part2(ex_input_p1):
+    input_, *_, exp = ex_input_p1
+    expected = len(exp.strip().split())
+    result = soln.main_part2(input_, generations=6)
+    assert result == expected

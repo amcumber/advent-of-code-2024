@@ -42,7 +42,7 @@ def find_trails(zero, grid):
             adj_nums.append(find_next(l_num, nns))
         if not adj_nums:
             return 0
-        adj_numsj = set(adj_nums)
+        adj_nums = set(adj_nums)
     return len(adj_nums)
 
 
