@@ -1,7 +1,7 @@
 import pytest
 
 from aoc_2024 import core
-from aoc_2024.day08 import soln
+from aoc_2024.day10 import soln
 
 
 @pytest.fixture
@@ -42,7 +42,7 @@ def ex_raw_input_p1(input_):
 
 @pytest.fixture
 def ex_raw_input_p2(input_):
-    expected = 34
+    expected = 81
     return input_, expected
 
 
